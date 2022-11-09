@@ -33,12 +33,16 @@ kafka:
 ```shell
 # Show all installable versions
 asdf list-all kafka
+asdf list-all kafka confluent-community
+asdf list-all kafka confluent-enterprise
 
 # Install specific version
 asdf install kafka latest:confluent-community
+asdf install kafka latest:confluent-enterprise
 
 # Set a version globally (on your ~/.tool-versions file)
 asdf global kafka latest:confluent-community
+asdf global kafka latest:confluent-enterprise
 
 # Now kafka commands are available
 kafka-topics --help

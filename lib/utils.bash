@@ -18,15 +18,21 @@ list_all_versions() {
   for version in $versions; do
     curl $curl_opts ${PACKAGES_URL}/${version}/ | sed -rn 's/^.*<a.*>(confluent-(community|oss)-[0-9\.-]*)\.tar.gz<\/a>/\1/p'
   done
+  for version in $versions; do
+    curl $curl_opts ${PACKAGES_URL}/${version}/ | sed -rn 's/^.*<a.*>confluent-([0-9\.-]*)\.tar.gz<\/a>/confluent-enterprise-\1/p'
+  done
 }
 
 download_release() {
-  local version filename majorversion url
+  local version filename majorversion downloadversion url
   version="$1"
   filename="$2"
 
-  majorversion="$(echo ${version} | sed -rn 's/^confluent-(community|oss)-([0-9]*\.[0-9]*)\..*$/\2/p')"
-  url="${PACKAGES_URL}/${majorversion}/${version}.tar.gz"
+  # extract first two version numbers
+  majorversion="$(echo ${version} | sed -rn 's/^confluent-(oss|community|enterprise)-([0-9]*\.[0-9]*)\..*$/\2/p')"
+  # remove 'enterprise-' from version
+  downloadversion="$(echo ${version} | sed -rn 's/^(confluent-)(oss-|community-)?(enterprise-)?([0-9\.-]*)$/\1\2\4/p')"
+  url="${PACKAGES_URL}/${majorversion}/${downloadversion}.tar.gz"
 
   echo "* Downloading $TOOL_NAME release $version..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"

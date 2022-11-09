@@ -17,6 +17,7 @@ jobs:
         version:
           - latest:confluent-oss
           - latest:confluent-community
+          - latest:confluent-enterprise
     runs-on: ${{ matrix.os }}
     steps:
       - name: asdf_plugin_test
