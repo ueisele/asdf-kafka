@@ -15,13 +15,27 @@ jobs:
           - ubuntu-latest
           - macos-latest
         version:
-          - latest:confluent-oss
-          - latest:confluent-community
           - latest:confluent-enterprise
+          - confluent-enterprise-1.0
+          - confluent-enterprise-2.0.1
+          - confluent-enterprise-5.2.7
+          - confluent-enterprise-5.5.12
+          - confluent-enterprise-7.3.0
+          - latest:confluent-community
+          - confluent-community-3.0.0
+          - confluent-community-4.0.0
+          - confluent-community-5.1.0
+          - confluent-community-5.2.7
+          - confluent-community-7.3.0
+          - latest:apache
+          - apache-0.8.0
+          - apache-0.8.1
+          - apache-0.11.0.3
+          - apache-3.3.1
     runs-on: ${{ matrix.os }}
     steps:
       - name: asdf_plugin_test
         uses: asdf-vm/actions/plugin-test@v1
         with:
           version: ${{ matrix.version }}
-          command: kafka-topics --version
+          command: kafka-topics --version || (kafka-topics; [[ $? -eq 1 ]])
