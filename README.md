@@ -90,6 +90,9 @@ Contributions of any kind welcome! See the [contributing guide](contributing.md)
 
 [Thanks goes to these contributors](https://github.com/ueisele/asdf-kafka/graphs/contributors)!
 
+This repository is based on the [asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template). 
+[Thanks to it's contributors](https://github.com/asdf-vm/asdf-plugin-template/graphs/contributors). 
+
 # License
 
 See [LICENSE](LICENSE) © [Uwe Eisele](https://github.com/ueisele/)
