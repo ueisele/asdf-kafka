@@ -122,9 +122,11 @@ download_release() {
 normalize_files() {
 	local file_path="$1"
 	# apache: remove .sh extension (.bak suffix is require by macos)
-	find ${file_path} -maxdepth 1 -name "*.sh" -exec sh -c 'old="{}" new="${old%.sh}"; mv "${old}" "${new}"; sed -i".bak" "s/\(kafka-run-class\)\.sh/\1/g" "${new}"; rm -f "${new}.bak"' \;
+	find ${file_path} -maxdepth 1 -name "*.sh" -exec \
+		sh -c 'old="{}" new="${old%.sh}"; mv "${old}" "${new}"; sed -i".bak" "s/\(kafka-run-class\)\.sh/\1/g" "${new}"; rm -f "${new}.bak"' \;
 	# apache-0.8.0: rename kafka-list-topic to kafka-topics
-	find ${file_path} -maxdepth 1 -name "kafka-list-topic" -exec mv {} "${file_path}/kafka-topics" \;
+	find ${file_path} -maxdepth 1 -name "kafka-list-topic" -exec \
+		mv {} "${file_path}/kafka-topics" \;
 }
 
 install_version() {
