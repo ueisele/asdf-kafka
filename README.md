@@ -5,7 +5,7 @@
 
 [kafka](https://github.com/ueisele/asdf-kafka) plugin for the [asdf version manager](https://asdf-vm.com).
 
-The plugin supports `Confluent Enterprise`, `Confluent Community` and `Apache` releases.
+The plugin supports `Apache`, `Confluent Community` and `Confluent Enterprise` releases.
 
 </div>
 
@@ -33,27 +33,27 @@ kafka:
 ```shell
 # Show all installable versions
 asdf list-all kafka
-asdf list-all kafka confluent-enterprise
-asdf list-all kafka confluent-community
 asdf list-all kafka apache
+asdf list-all kafka confluent-community
+asdf list-all kafka confluent-enterprise
 
 # Install specific version
-asdf install kafka latest:confluent-enterprise
-asdf install kafka latest:confluent-community
 asdf install kafka latest:apache
+asdf install kafka latest:confluent-community
+asdf install kafka latest:confluent-enterprise
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global kafka latest:confluent-enterprise
-asdf global kafka latest:confluent-community
 asdf global kafka latest:apache
+asdf global kafka latest:confluent-community
+asdf global kafka latest:confluent-enterprise
 
 # Now kafka commands are available
-kafka-topics --help
+kafka-topics --version
 
 # Set a version for the current shell
-asdf shell kafka latest:confluent-enterprise
-asdf shell kafka latest:confluent-community
 asdf shell kafka latest:apache
+asdf shell kafka latest:confluent-community
+asdf shell kafka latest:confluent-enterprise
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
