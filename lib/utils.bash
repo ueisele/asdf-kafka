@@ -3,7 +3,8 @@
 set -euo pipefail
 
 CONFLUENT_PACKAGES_URL="https://packages.confluent.io/archive"
-APACHE_PACKAGES_URL="https://archive.apache.org/dist/kafka"
+APACHE_PACKAGES_URL="https://dlcdn.apache.org/kafka"
+APACHE_ARCHIVE_PACKAGES_URL="https://archive.apache.org/dist/kafka"
 TOOL_NAME="kafka"
 TOOL_TEST="kafka-topics --version"
 
@@ -40,12 +41,19 @@ list_confluent_versions() {
 	done
 }
 
-list_apache_versions() {
+list_apache_package_versions() {
+	local packages_url="$1"
 	# extract available versions from html page (without scala version)
 	# output pattern: apache-<version>
-	curl $curl_opts "${APACHE_PACKAGES_URL}/" |
-		sed -rn 's/^.*<a href=.*>([0-9\.]*)\/<\/a>.*$/apache-\1/p' |
-		sort -V
+	curl $curl_opts "${packages_url}/" |
+		sed -rn 's/^.*<a href=.*>([0-9\.]*)\/<\/a>.*$/apache-\1/p'
+}
+
+list_apache_versions() {
+	{
+		list_apache_package_versions "${APACHE_ARCHIVE_PACKAGES_URL}"
+		list_apache_package_versions "${APACHE_PACKAGES_URL}"
+	} | sort -V | uniq
 }
 
 list_all_versions() {
@@ -80,26 +88,33 @@ confluent_download_url() {
 }
 
 apache_download_url() {
-	local version downloadversion scalaversion extension
+	local version downloadversion scalaversion extension packages_url
 	version="$1"
 	# remove 'apache-' from version
 	downloadversion="$(echo ${version} | sed -rn 's/^apache-(.*)$/\1/p')"
 	# extract most current scala version
-	scalaversion="$(
-		curl $curl_opts "${APACHE_PACKAGES_URL}/${downloadversion}/" |
-			sed -rn 's/^.*<a href=.*>kafka_([0-9\.]*)-.*$/\1/p' |
-			uniq |
-			sort -V |
-			tail -1
-	)"
 	# determine extension (0.8.0 has .tar.gz all others have .tgz)
 	if [[ "${downloadversion}" == "0.8.0" ]]; then
 		extension="tar.gz"
 	else
 		extension="tgz"
 	fi
-	# output download url
-	echo "${APACHE_PACKAGES_URL}/${downloadversion}/kafka_${scalaversion}-${downloadversion}.${extension}"
+
+	for packages_url in "${APACHE_PACKAGES_URL}" "${APACHE_ARCHIVE_PACKAGES_URL}"; do
+		scalaversion="$(
+			{ curl $curl_opts "${packages_url}/${downloadversion}/" 2>/dev/null || true; } |
+				sed -rn 's/^.*<a href=.*>kafka_([0-9\.]*)-.*$/\1/p' |
+				uniq |
+				sort -V |
+				tail -1
+		)"
+		if [[ -n "${scalaversion}" ]]; then
+			echo "${packages_url}/${downloadversion}/kafka_${scalaversion}-${downloadversion}.${extension}"
+			return
+		fi
+	done
+
+	fail "Apache Kafka release ${downloadversion} does not contain a binary archive."
 }
 
 download_release() {
