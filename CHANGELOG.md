@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/ueisele/asdf-kafka/compare/v1.0.0...v1.0.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* use Apache CDN for current Kafka releases ([21798b9](https://github.com/ueisele/asdf-kafka/commit/21798b955e3d4d579e2d8047a4e76f543565caae))
+
 ## 1.0.0 (2022-11-12)
 
 
